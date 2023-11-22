@@ -33,7 +33,7 @@ const Button: UserComponent<props> = (props) => {
         style={{
           ...style,
           cursor: isSelected ? "inherit" : style?.cursor,
-          background: "#0044C1",
+          background: "var(--blue)",
           padding: "12px",
           border: "none",
           color: "white",

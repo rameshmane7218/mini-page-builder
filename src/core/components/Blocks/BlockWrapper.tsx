@@ -72,7 +72,7 @@ export const BlockWrapper: FC<BoxProps> = function Box({
           ...wrapperStyle,
           // borderRadius,
           border: isSelected
-            ? "1px solid red"
+            ? "1px solid var(--border-block-active)"
             : !isNew
             ? "1px solid transparent"
             : "none",

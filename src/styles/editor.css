@@ -1,3 +1,14 @@
 :root {
   --sidebar: 326px;
+
+  --black: #000000;
+  --white: #ffffff;
+  --gray-1: #f3f3f3;
+  --gray-2: #d4d4d4;
+  --gray-5: #d9d9d9;
+  --gray-8: #595959;
+  --gray-9: #262626;
+  --gray-10: #2d2d2d;
+  --blue: #0044c1;
+  --border-block-active: #d95409;
 }

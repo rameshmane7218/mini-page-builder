@@ -1,8 +1,9 @@
 import { Resolver } from "@/core/types/types";
 import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { DndContext, XYCoord, useDrop } from "react-dnd";
+import { DndContext, useDrop } from "react-dnd";
 import Frame, { FrameContext } from "react-frame-component";
 import styles from "./Preview.module.css";
+import { v4 as uuidv4 } from "uuid";
 const Preview = ({
   resolver,
   blocks,
@@ -14,7 +15,7 @@ const Preview = ({
 }) => {
   const [selected, setSelected] = useState<number | undefined>(undefined);
   const iframeRef: React.RefObject<HTMLIFrameElement> = useRef(null);
-  const [{ canDrop, isOver }, drop] = useDrop(
+  const [, drop] = useDrop(
     () => ({
       accept: Object.keys(resolver),
       drop: (item: any, monitor) => {
@@ -22,8 +23,13 @@ const Preview = ({
           onChange([
             ...blocks,
             {
-              name: item?.type,
-              ...(monitor.getSourceClientOffset() ? monitor.getSourceClientOffset() : {}),
+              id: uuidv4(),
+              blockType: item?.type,
+              settings: {
+                ...(monitor.getSourceClientOffset()
+                  ? monitor.getSourceClientOffset()
+                  : {}),
+              },
             },
           ]);
         } else {
@@ -31,7 +37,12 @@ const Preview = ({
           if (updatedBlocks[item.blockId]) {
             updatedBlocks[item.blockId] = {
               ...updatedBlocks[item.blockId],
-              ...(monitor.getSourceClientOffset() ? monitor.getSourceClientOffset() : {}),
+              settings: {
+                ...(updatedBlocks[item.blockId]?.settings || {}),
+                ...(monitor.getSourceClientOffset()
+                  ? monitor.getSourceClientOffset()
+                  : {}),
+              },
             };
             onChange([...updatedBlocks]);
           }
@@ -58,7 +69,7 @@ const Preview = ({
         setSelected(undefined);
       }
     },
-    [selected, blocks],
+    [selected, blocks, onChange],
   );
 
   return (
@@ -71,6 +82,34 @@ const Preview = ({
         <html>
           <head>
             <style>
+              :root {
+                --sidebar: 326px;
+              
+                --black: #000000;
+                --white: #ffffff;
+                --gray-1: #f3f3f3;
+                --gray-2: #d4d4d4;
+                --gray-5: #d9d9d9;
+                --gray-8: #595959;
+                --gray-9: #262626;
+                --gray-10: #2d2d2d;
+                --blue: #0044c1;
+                --border-block-active: #d95409;
+              }
+              html {
+                font-size: 16px;
+                font-style: normal;
+                scroll-behavior: smooth;
+              }
+              h1,
+              h2,
+              h3,
+              h4,
+              h5,
+              h6 {
+                margin: 0;
+              }
+              
               @import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,500;1,600;1,700;1,800&display=swap");
               html,body,.frame-content {
                 height: 100%;
@@ -78,7 +117,7 @@ const Preview = ({
                 margin: 0;
               } 
               body{
-                background: #F3F3F3;
+                background: var(--gray-1);
                 font-family: "Open Sans", sans-serif;
               }
             </style>
@@ -113,7 +152,9 @@ const Preview = ({
                 }
               }}>
               {blocks.map((block, index) => {
-                const Element = resolver[block?.name] as React.FunctionComponent<any>;
+                const Element = resolver[
+                  block?.blockType
+                ] as React.FunctionComponent<any>;
                 return (
                   <Element
                     key={index}
@@ -122,8 +163,8 @@ const Preview = ({
                     isSelected={selected == index}
                     wrapperStyle={{
                       position: "absolute",
-                      top: block.y,
-                      left: block.x,
+                      top: block?.settings?.y,
+                      left: block?.settings?.x,
                     }}
                     onMouseDown={(e: any) => {
                       setSelected(index);
@@ -148,7 +189,7 @@ const FrameBindingContext = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     //@ts-ignore
     dragDropManager?.getBackend().addEventListeners(window);
-  }, []);
+  }, [dragDropManager, window]);
 
   return <>{children}</>;
 };
