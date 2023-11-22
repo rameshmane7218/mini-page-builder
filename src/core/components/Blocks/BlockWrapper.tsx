@@ -1,6 +1,5 @@
 import type { CSSProperties, FC } from "react";
 import { useDrag } from "react-dnd";
-
 const style: CSSProperties = {
   display: "inline-block",
   border: "1px solid transparent",
@@ -8,15 +7,12 @@ const style: CSSProperties = {
   //   cursor: "move",
   //   float: "left",
   //   position: "absolute",
-  borderRadius: 4,
+  // borderRadius: 4,
   overflow: "hidden",
 };
 
 export interface BoxProps
-  extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  > {
+  extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
   children: React.ReactNode;
   type: string;
   isNew?: Boolean;
@@ -36,15 +32,16 @@ export const BlockWrapper: FC<BoxProps> = function Box({
   isSelected,
   isNew = true,
   style: wrapperStyle = {},
+  className,
   ...rest
 }) {
   const [{ isDragging }, drag] = useDrag(
     () => ({
       type: type,
       item: { type, isNew, blockId },
-      options: {
-        dropEffect: isNew ? "copy" : "move",
-      },
+      // options: {
+      //   dropEffect: isNew ? "copy" : "move",
+      // },
       //   end: (item, monitor) => {
       //     const dropResult = monitor.getDropResult<DropResult>();
       //   },
@@ -56,31 +53,31 @@ export const BlockWrapper: FC<BoxProps> = function Box({
         handlerId: monitor.getHandlerId(),
       }),
     }),
-    [type]
+    [type],
   );
 
   const opacity = isDragging && !isNew ? 0.4 : 1;
   const cursor = isDragging ? "grabbing" : "grab";
-  const borderRadius = isDragging ? "4px" : wrapperStyle.borderRadius;
+  // const borderRadius = isDragging ? "4px" : wrapperStyle.borderRadius;
   return (
     <>
       <div
-        // ref={!isNew && !isSelected ? undefined : drag}
-        ref={drag}
+        ref={!isNew && !isSelected ? undefined : drag}
+        // ref={drag}
+        className={className}
         style={{
           ...style,
           opacity,
           cursor: cursor,
           ...wrapperStyle,
-          borderRadius,
+          // borderRadius,
           border: isSelected
             ? "1px solid red"
             : !isNew
             ? "1px solid transparent"
             : "none",
         }}
-        {...rest}
-      >
+        {...rest}>
         {children}
       </div>
     </>

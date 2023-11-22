@@ -28,12 +28,10 @@ const Label: UserComponent<props> = (props) => {
       isNew={isNew}
       blockId={blockId}
       isSelected={isSelected}
-      style={wrapperStyle}
-    >
+      style={wrapperStyle}>
       <label
         style={{ ...style, cursor: isSelected ? "inherit" : style?.cursor }}
-        {...rest}
-      >
+        {...rest}>
         {text}
       </label>
     </BlockWrapper>

@@ -3,8 +3,8 @@ import React, { CSSProperties } from "react";
 import { BlockWrapper } from "../BlockWrapper";
 interface props
   extends React.DetailedHTMLProps<
-    React.ButtonHTMLAttributes<HTMLButtonElement>,
-    HTMLButtonElement
+    React.InputHTMLAttributes<HTMLInputElement>,
+    HTMLInputElement
   > {
   wrapperStyle?: CSSProperties;
   text: string;
@@ -12,8 +12,9 @@ interface props
   isSelected?: Boolean;
   blockId?: string | number;
 }
-const Button: UserComponent<props> = (props) => {
+const Input: UserComponent<props> = (props) => {
   const {
+    type,
     text = "Button",
     wrapperStyle,
     blockId,
@@ -24,25 +25,26 @@ const Button: UserComponent<props> = (props) => {
   } = props;
   return (
     <BlockWrapper
-      type="Button"
+      type="Input"
       isNew={isNew}
       blockId={blockId}
       isSelected={isSelected}
       style={wrapperStyle}>
-      <button
+      <input
         style={{
           ...style,
           cursor: isSelected ? "inherit" : style?.cursor,
-          background: "#0044C1",
+          background: "white",
           padding: "12px",
           border: "none",
-          color: "white",
+          outline: "none",
+          //   color: "white",
         }}
-        {...rest}>
-        {text}
-      </button>
+        type={type}
+        {...rest}
+      />
     </BlockWrapper>
   );
 };
 
-export { Button };
+export { Input };

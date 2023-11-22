@@ -1,12 +1,6 @@
 import { Resolver } from "@/core/types/types";
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { DndContext, useDrop } from "react-dnd";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { DndContext, XYCoord, useDrop } from "react-dnd";
 import Frame, { FrameContext } from "react-frame-component";
 import styles from "./Preview.module.css";
 const Preview = ({
@@ -29,7 +23,7 @@ const Preview = ({
             ...blocks,
             {
               name: item?.type,
-              ...(monitor.getClientOffset() ? monitor.getClientOffset() : {}),
+              ...(monitor.getSourceClientOffset() ? monitor.getSourceClientOffset() : {}),
             },
           ]);
         } else {
@@ -37,7 +31,7 @@ const Preview = ({
           if (updatedBlocks[item.blockId]) {
             updatedBlocks[item.blockId] = {
               ...updatedBlocks[item.blockId],
-              ...(monitor.getClientOffset() ? monitor.getClientOffset() : {}),
+              ...(monitor.getSourceClientOffset() ? monitor.getSourceClientOffset() : {}),
             };
             onChange([...updatedBlocks]);
           }
@@ -52,7 +46,7 @@ const Preview = ({
         };
       },
     }),
-    [blocks]
+    [blocks],
   );
 
   const handleDeleteElement = useCallback(
@@ -64,7 +58,7 @@ const Preview = ({
         setSelected(undefined);
       }
     },
-    [selected, blocks]
+    [selected, blocks],
   );
 
   return (
@@ -73,29 +67,35 @@ const Preview = ({
         ref={iframeRef}
         style={{ width: "100%", height: "100%" }}
         className={styles.frame}
-        initialContent={`<!DOCTYPE html><html><head><style>html,body,.frame-content{
-            height: 100%;
-            width: 100%;
-            margin: 0;
-        } body{
-            background: #F3F3F3;
-        }</style></head><body><div id="mountHere" style="height:100%"></div></body></html>`}
-      >
+        initialContent={`<!DOCTYPE html>
+        <html>
+          <head>
+            <style>
+              @import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,500;1,600;1,700;1,800&display=swap");
+              html,body,.frame-content {
+                height: 100%;
+                width: 100%;
+                margin: 0;
+              } 
+              body{
+                background: #F3F3F3;
+                font-family: "Open Sans", sans-serif;
+              }
+            </style>
+          </head>
+          <body><div id="mountHere" style="height:100%"></div></body>
+        </html>`}>
         <FrameBindingContext>
           <div
             style={{ overflow: "hidden", clear: "both", height: "100%" }}
             onKeyDown={(event) => {
-              if (
-                (event.key === "Backspace" && event.code === "Backspace") ||
-                event.key == "Delete"
-              ) {
+              if ((event.metaKey && event.key === "Backspace") || event.key == "Delete") {
                 handleDeleteElement(selected);
               } else {
                 //   TODO: Handle Edit
               }
             }}
-            tabIndex={0}
-          >
+            tabIndex={0}>
             <div
               ref={drop}
               id="previewPannel"
@@ -111,12 +111,9 @@ const Preview = ({
                 if (target.id == "previewPannel") {
                   setSelected(undefined);
                 }
-              }}
-            >
+              }}>
               {blocks.map((block, index) => {
-                const Element = resolver[
-                  block?.name
-                ] as React.FunctionComponent<any>;
+                const Element = resolver[block?.name] as React.FunctionComponent<any>;
                 return (
                   <Element
                     key={index}
@@ -128,7 +125,7 @@ const Preview = ({
                       top: block.y,
                       left: block.x,
                     }}
-                    onClick={(e: any) => {
+                    onMouseDown={(e: any) => {
                       setSelected(index);
                     }}
                   />
@@ -151,7 +148,7 @@ const FrameBindingContext = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     //@ts-ignore
     dragDropManager?.getBackend().addEventListeners(window);
-  });
+  }, []);
 
   return <>{children}</>;
 };

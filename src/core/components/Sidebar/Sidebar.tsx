@@ -30,6 +30,9 @@ const blocks = [
     name: "Label",
   },
   {
+    name: "Input",
+  },
+  {
     name: "Button",
   },
 ];
