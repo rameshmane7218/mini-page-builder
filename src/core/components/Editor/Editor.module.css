@@ -1,0 +1,7 @@
+.header {
+  height: 50px;
+}
+.pannel {
+  display: flex;
+  height: calc(100dvh - 52px);
+}

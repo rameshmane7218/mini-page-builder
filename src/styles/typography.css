@@ -1,0 +1,58 @@
+html {
+  font-size: 16px;
+  font-style: normal;
+  scroll-behavior: smooth;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+}
+
+.header-h1 {
+  font-size: clamp(34px, 6vw, 64px);
+  line-height: 125%;
+  font-weight: 600;
+}
+.header-h2 {
+  font-size: clamp(30px, 6vw, 48px);
+  line-height: 125%;
+  font-weight: 600;
+}
+.header-h3 {
+  font-size: clamp(30px, 6vw, 36px);
+  line-height: 122.222%;
+  font-weight: 600;
+}
+.header-h4 {
+  font-size: clamp(28px, 6vw, 32px);
+  line-height: 122.222%;
+  font-weight: 600;
+}
+.body-b1 {
+  font-size: 24px;
+  line-height: 133.333%;
+}
+.body-b2 {
+  font-size: 20px;
+  line-height: 150%;
+}
+.body-b3 {
+  font-size: 18px;
+  line-height: 155.555%;
+}
+.body-b4 {
+  font-size: 16px;
+  line-height: 150%;
+}
+.body-b5 {
+  font-size: 14px;
+  line-height: 142.857%;
+}
+.body-b6 {
+  font-size: 12px;
+  line-height: 150%;
+}

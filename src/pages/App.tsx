@@ -1,24 +1,18 @@
 import React from "react";
-import logo from "@/src/logo.svg";
 import "@/styles/App.css";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { Editor } from "@/core/components/Editor/Editor";
+import { Label } from "@/core/components/Blocks/Label/Label";
+import { Button } from "@/core/components/Blocks/Button/Button"
 
 function App() {
+  const [value, setValue] = useLocalStorage<Record<string, any>[]>("data", [])
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Editor resolver={{ Label, Button }} blocks={value} onChange={(blocks) => {
+        setValue(blocks)
+      }}></Editor>
     </div>
   );
 }

@@ -1,0 +1,13 @@
+.preview {
+  flex: 1 1 0%;
+  border: 1px solid black;
+  height: 100%;
+}
+
+.frame {
+  border: none;
+}
+.frame html,
+.frame body {
+  height: 100% !important;
+}
