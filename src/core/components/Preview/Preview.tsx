@@ -4,6 +4,8 @@ import { DndContext, useDrop } from "react-dnd";
 import Frame, { FrameContext } from "react-frame-component";
 import styles from "./Preview.module.css";
 import { v4 as uuidv4 } from "uuid";
+import { BlockWrapper } from "../Blocks/BlockWrapper";
+import { iframeInitialContent } from "./iframeInitialContent";
 const Preview = ({
   resolver,
   blocks,
@@ -13,18 +15,22 @@ const Preview = ({
   blocks: Record<string, any>[];
   onChange: (blocks: Record<string, any>[]) => void;
 }) => {
-  const [selected, setSelected] = useState<number | undefined>(undefined);
+  const [isDraggingBlock, setIsDraggingBlock] = useState(false);
+  const [selected, setSelected] = useState<number | null>(null);
   const iframeRef: React.RefObject<HTMLIFrameElement> = useRef(null);
   const [, drop] = useDrop(
     () => ({
       accept: Object.keys(resolver),
       drop: (item: any, monitor) => {
-        if (item != undefined && item?.type && item?.isNew) {
+        if (item != undefined && item?.blockType && item?.isNew) {
+          /**
+           * If Block is new then it will add
+           */
           onChange([
             ...blocks,
             {
               id: uuidv4(),
-              blockType: item?.type,
+              blockType: item?.blockType,
               settings: {
                 ...(monitor.getSourceClientOffset()
                   ? monitor.getSourceClientOffset()
@@ -33,44 +39,67 @@ const Preview = ({
             },
           ]);
         } else {
-          let updatedBlocks = [...blocks];
-          if (updatedBlocks[item.blockId]) {
-            updatedBlocks[item.blockId] = {
-              ...updatedBlocks[item.blockId],
-              settings: {
-                ...(updatedBlocks[item.blockId]?.settings || {}),
-                ...(monitor.getSourceClientOffset()
-                  ? monitor.getSourceClientOffset()
-                  : {}),
-              },
-            };
-            onChange([...updatedBlocks]);
-          }
+          /**
+           * If Block is not new and it has blockId then it will update that block
+           */
+          let updatedBlocks = [...blocks].map((block) => {
+            if (block?.id == item.blockId) {
+              block = {
+                ...block,
+                settings: {
+                  ...(block?.settings || {}),
+                  ...(monitor.getSourceClientOffset()
+                    ? monitor.getSourceClientOffset()
+                    : {}),
+                },
+              };
+            }
+            return block;
+          });
+          onChange([...updatedBlocks]);
         }
-        return { name: "Preview" };
+        // return { name: "Preview" };
       },
       collect: (monitor) => {
-        // console.log("monitor", monitor.getItem(), monitor.getClientOffset());
         return {
           isOver: monitor.isOver(),
           canDrop: monitor.canDrop(),
         };
       },
     }),
-    [blocks],
+    [blocks, onChange],
+  );
+
+  const handleSetIsDraggingBlock = useCallback(
+    (value: boolean) => {
+      setIsDraggingBlock(value);
+    },
+    [isDraggingBlock],
   );
 
   const handleDeleteElement = useCallback(
-    (blockId: number | undefined) => {
-      if (blockId != undefined && blocks[blockId] != undefined) {
-        let newBlocks = [...blocks];
-        newBlocks.splice(blockId, 1);
-        onChange([...newBlocks]);
-        setSelected(undefined);
-      }
+    (blockId: number | null) => {
+      let updatedBlocks = [...blocks].filter((block) => block?.id !== blockId);
+      onChange([...updatedBlocks]);
+      setSelected(null);
     },
     [selected, blocks, onChange],
   );
+
+
+  useEffect(() => {
+    if (iframeRef.current) {
+      const contentDocument = iframeRef.current.contentDocument;
+      if (isDraggingBlock) {
+        contentDocument?.body.classList.add("grabbing");
+      } else {
+        contentDocument?.body.classList.remove("grabbing");
+      }
+      return () => {
+        contentDocument?.body.classList.remove("grabbing");
+      };
+    }
+  }, [isDraggingBlock]);
 
   return (
     <div className={styles.preview}>
@@ -78,63 +107,15 @@ const Preview = ({
         ref={iframeRef}
         style={{ width: "100%", height: "100%" }}
         className={styles.frame}
-        initialContent={`<!DOCTYPE html>
-        <html>
-          <head>
-            <style>
-              :root {
-                --sidebar: 326px;
-              
-                --black: #000000;
-                --white: #ffffff;
-                --gray-1: #f3f3f3;
-                --gray-2: #d4d4d4;
-                --gray-5: #d9d9d9;
-                --gray-8: #595959;
-                --gray-9: #262626;
-                --gray-10: #2d2d2d;
-                --blue: #0044c1;
-                --border-block-active: #d95409;
-              }
-              html {
-                font-size: 16px;
-                font-style: normal;
-                scroll-behavior: smooth;
-              }
-              h1,
-              h2,
-              h3,
-              h4,
-              h5,
-              h6 {
-                margin: 0;
-              }
-              
-              @import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,500;1,600;1,700;1,800&display=swap");
-              html,body,.frame-content {
-                height: 100%;
-                width: 100%;
-                margin: 0;
-              } 
-              body{
-                background: var(--gray-1);
-                font-family: "Open Sans", sans-serif;
-              }
-            </style>
-          </head>
-          <body><div id="mountHere" style="height:100%"></div></body>
-        </html>`}>
+        initialContent={iframeInitialContent}>
         <FrameBindingContext>
           <div
-            style={{ overflow: "hidden", clear: "both", height: "100%" }}
-            onKeyDown={(event) => {
-              if ((event.metaKey && event.key === "Backspace") || event.key == "Delete") {
-                handleDeleteElement(selected);
-              } else {
-                //   TODO: Handle Edit
-              }
-            }}
-            tabIndex={0}>
+            style={{
+              overflow: "hidden",
+              clear: "both",
+              height: "100%",
+              width: "100%",
+            }}>
             <div
               ref={drop}
               id="previewPannel"
@@ -148,7 +129,7 @@ const Preview = ({
                   id: string;
                 };
                 if (target.id == "previewPannel") {
-                  setSelected(undefined);
+                  setSelected(null);
                 }
               }}>
               {blocks.map((block, index) => {
@@ -156,20 +137,35 @@ const Preview = ({
                   block?.blockType
                 ] as React.FunctionComponent<any>;
                 return (
-                  <Element
+                  <BlockWrapper
                     key={index}
                     isNew={false}
-                    blockId={index}
-                    isSelected={selected == index}
-                    wrapperStyle={{
+                    blockType={block.blockType}
+                    blockId={block.id}
+                    isSelected={selected === block.id}
+                    style={{
                       position: "absolute",
                       top: block?.settings?.y,
                       left: block?.settings?.x,
                     }}
-                    onMouseDown={(e: any) => {
-                      setSelected(index);
+                    onMouseDown={() => {
+                      setSelected(block.id);
                     }}
-                  />
+                    handleSetIsDraggingBlock={handleSetIsDraggingBlock}
+                    onKeyDown={(event) => {
+                      console.log("onKeyDown", event);
+                      if (
+                        (event.metaKey && event.key === "Backspace") ||
+                        event.key == "Delete"
+                      ) {
+                        handleDeleteElement(selected);
+                      } else {
+                        //   TODO: Handle Edit
+                      }
+                    }}
+                    tabIndex={0}>
+                    <Element isSelected={selected === block.id} />
+                  </BlockWrapper>
                 );
               })}
             </div>

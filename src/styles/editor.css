@@ -1,5 +1,6 @@
 :root {
-  --sidebar: 326px;
+  --sidebar-width: 326px;
+  --sidebar-width-small: 120px;
 
   --black: #000000;
   --white: #ffffff;
@@ -11,4 +12,11 @@
   --gray-10: #2d2d2d;
   --blue: #0044c1;
   --border-block-active: #d95409;
+}
+
+body.grabbing {
+  cursor: grabbing !important;
+}
+body.grabbing * {
+  cursor: grabbing !important;
 }

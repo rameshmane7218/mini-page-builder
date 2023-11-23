@@ -2,6 +2,7 @@ export const iframeInitialContent = `<!DOCTYPE html>
     <html>
     <head>
         <style>
+        @import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,500;1,600;1,700;1,800&display=swap");
         :root {
             --sidebar: 326px;
         
@@ -30,7 +31,6 @@ export const iframeInitialContent = `<!DOCTYPE html>
             margin: 0;
         }
         
-        @import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,500;1,600;1,700;1,800&display=swap");
         html,body,.frame-content {
             height: 100%;
             width: 100%;
@@ -39,6 +39,10 @@ export const iframeInitialContent = `<!DOCTYPE html>
         body{
             background: var(--gray-1);
             font-family: "Open Sans", sans-serif;
+        }
+        body.grabbing * {
+            cursor: grabbing !important; 
+            user-select: none // without this I get the text cursor in Safari 
         }
         </style>
     </head>

@@ -1,0 +1,6 @@
+.block_wrapper:active {
+  outline: none;
+}
+.block_wrapper:focus {
+  outline: none;
+}

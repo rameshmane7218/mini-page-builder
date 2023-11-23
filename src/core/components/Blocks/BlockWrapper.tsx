@@ -1,85 +1,83 @@
-import type { CSSProperties, FC } from "react";
+import { memo, type CSSProperties, type FC, useEffect } from "react";
 import { useDrag } from "react-dnd";
+import styles from "./BlockWrapper.module.css";
 const style: CSSProperties = {
   display: "inline-block",
   border: "1px solid transparent",
-  //   backgroundColor: "white",
-  //   cursor: "move",
-  //   float: "left",
-  //   position: "absolute",
-  // borderRadius: 4,
   overflow: "hidden",
 };
 
-export interface BoxProps
+export interface BlockWrapperProps
   extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
   children: React.ReactNode;
-  type: string;
-  isNew?: Boolean;
-  isSelected?: Boolean;
+  blockType: string;
+  isNew?: boolean;
+  isSelected?: boolean;
   blockId?: string | number;
+  handleSetIsDraggingBlock?: (value: boolean) => void;
 }
 
-interface DropResult {
-  type: string;
-  isNew: Boolean | undefined;
-}
-
-export const BlockWrapper: FC<BoxProps> = function Box({
+export const BlockWrapper: FC<BlockWrapperProps> = memo(function ({
   children,
-  type,
+  blockType,
   blockId,
   isSelected,
-  isNew = true,
+  isNew = false,
   style: wrapperStyle = {},
-  className,
+  handleSetIsDraggingBlock = () => undefined,
+  className = "",
   ...rest
 }) {
   const [{ isDragging }, drag] = useDrag(
     () => ({
-      type: type,
-      item: { type, isNew, blockId },
-      // options: {
-      //   dropEffect: isNew ? "copy" : "move",
-      // },
-      //   end: (item, monitor) => {
-      //     const dropResult = monitor.getDropResult<DropResult>();
-      //   },
-      previewOptions: {
-        captureDraggingState: true,
+      type: blockType,
+      item: { blockType, isNew, blockId },
+      collect: (monitor) => {
+        const isDragging = monitor.isDragging();
+
+        return {
+          isDragging: isDragging,
+          handlerId: monitor.getHandlerId(),
+        };
       },
-      collect: (monitor) => ({
-        isDragging: monitor.isDragging(),
-        handlerId: monitor.getHandlerId(),
-      }),
     }),
-    [type],
+    [blockType, isNew, blockId],
   );
 
   const opacity = isDragging && !isNew ? 0.4 : 1;
   const cursor = isDragging ? "grabbing" : "grab";
-  // const borderRadius = isDragging ? "4px" : wrapperStyle.borderRadius;
+
+  useEffect(() => {
+    if (isDragging) {
+      document.body.classList.add("grabbing");
+      handleSetIsDraggingBlock(true);
+    } else {
+      document.body.classList.remove("grabbing");
+      handleSetIsDraggingBlock(false);
+    }
+    return () => {
+      handleSetIsDraggingBlock(false);
+    };
+  }, [isDragging]);
+
   return (
-    <>
-      <div
-        ref={!isNew && !isSelected ? undefined : drag}
-        // ref={drag}
-        className={className}
-        style={{
-          ...style,
-          opacity,
-          cursor: cursor,
-          ...wrapperStyle,
-          // borderRadius,
-          border: isSelected
-            ? "1px solid var(--border-block-active)"
-            : !isNew
-            ? "1px solid transparent"
-            : "none",
-        }}
-        {...rest}>
-        {children}
-      </div>
-    </>
+    <div
+      ref={drag}
+      className={`${styles.block_wrapper} ${className}`}
+      role="button"
+      style={{
+        ...style,
+        opacity,
+        cursor: cursor,
+        ...wrapperStyle,
+        border: isSelected
+          ? "2px solid var(--border-block-active)"
+          : !isNew
+          ? "2px solid transparent"
+          : "none",
+      }}
+      {...rest}>
+      {children}
+    </div>
   );
-};
+});

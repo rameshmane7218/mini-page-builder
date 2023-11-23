@@ -11,7 +11,7 @@ const Sidebar = ({ resolver }: { resolver: Resolver }) => {
       <h2 className={styles.sidebar_header}>BLOCKS</h2>
       <div className={styles.sidebar_blocks_container}>
         {blocks.map((block, index) => (
-          <BlockWrapper key={index} isNew={true} type={block.name}>
+          <BlockWrapper key={index} isNew={true} blockType={block.name}>
             <div className={styles.sidebar_block}>
               <GripVertical fill="#D4D4D4" />
               <div>{block.name}</div>
