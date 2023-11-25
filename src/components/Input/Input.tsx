@@ -5,8 +5,10 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   isSelected?: boolean;
 }
 const Input: FC<InputProps> = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, ...rest }, ref) => {
-    return <input ref={ref} className={cn(styles.label, className)} {...rest} />;
+  ({ className, step = "any", ...rest }, ref) => {
+    return (
+      <input ref={ref} className={cn(styles.input, className)} step={step} {...rest} />
+    );
   },
 );
 

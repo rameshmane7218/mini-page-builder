@@ -1,3 +1,9 @@
-.input{
-    
+.input {
+  border: 1px solid var(--gray-5);
+  border-radius: 2px;
+  padding: 8px 12px;
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 400;
+  color: var(--gray-8);
 }

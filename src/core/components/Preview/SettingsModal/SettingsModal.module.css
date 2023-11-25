@@ -1,27 +1,33 @@
-.header {
+.form_header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: 21px;
 }
-.header > h2 {
+.form_header > h2 {
   font-size: 21px;
   font-weight: 600;
 }
-.header > button {
+.form_header > button {
   height: 100%;
   aspect-ratio: 1/1;
 }
 
-.footer {
+.form_footer {
   display: flex;
   justify-content: start;
 }
 
-.input_wrapper {
+.form_input_wrapper {
   display: flex;
   flex-direction: column;
   justify-content: stretch;
   text-align: left;
   gap: 2px;
+}
+
+.form_body {
+  display: flex;
+  flex-direction: column;
+  gap: 33px;
 }

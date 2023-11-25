@@ -1,3 +1,6 @@
-.label{
-    
+.label {
+  font-size: 14px;
+  line-height: 22px;
+  font-weight: 400;
+  color: var(--gray-9);
 }

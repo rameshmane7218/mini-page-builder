@@ -1,17 +1,13 @@
 import { Resolver } from "@/core/types/types";
-import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { DndContext, useDrop } from "react-dnd";
-import Frame, { FrameContext } from "react-frame-component";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useDrop } from "react-dnd";
+import Frame from "react-frame-component";
 import styles from "./Preview.module.css";
 import { v4 as uuidv4 } from "uuid";
 import { BlockWrapper } from "../Blocks/BlockWrapper";
 import { iframeInitialContent } from "./Iframe/iframeInitialContent";
-import { Modal, ModalBody, ModalFooter, ModalHeader } from "@/components/Modal/Modal";
 import { useDisclosure } from "@/hooks/useDisclosure";
-import { Divider } from "@/components/Divider/Divider";
-import { Button } from "@/components/Button/Button";
 import { FrameBindingContext } from "./Iframe/FrameBindingContext";
-import { FaTimes } from "react-icons/fa";
 import { SettingsModal } from "./SettingsModal/SettingsModal";
 
 const Preview = ({
@@ -28,6 +24,10 @@ const Preview = ({
   const [isDraggingBlock, setIsDraggingBlock] = useState(false);
   const [selected, setSelected] = useState<number | null>(null);
   const iframeRef: React.RefObject<HTMLIFrameElement> = useRef(null);
+  const [dropDimentions, setDropDimention] = useState<{
+    width?: number;
+    height?: number;
+  }>({});
   const [, drop] = useDrop(
     () => ({
       accept: Object.keys(resolver),
@@ -37,20 +37,19 @@ const Preview = ({
            * If Block is new then it will add
            */
           const newBlock = {
-            id: uuidv4(),
+            // id: uuidv4(),
             blockType: item?.blockType,
             settings: {
               ...(monitor.getSourceClientOffset() ? monitor.getSourceClientOffset() : {}),
             },
           };
-          onChange([...blocks, newBlock]);
+          // onChange([...blocks, newBlock]);
           setCurrentBlock(newBlock);
           onOpen();
         } else {
           /**
            * If Block is not new and it has blockId then it will update that block
            */
-          // handleUpdateBlock(item.blockId)
           let updatedBlocks = [...blocks].map((block) => {
             if (block?.id == item.blockId) {
               block = {
@@ -88,6 +87,7 @@ const Preview = ({
   const handleSaveBlock = useCallback(
     (block: Record<string, any>) => {
       onChange([...blocks, { ...block, id: uuidv4() }]);
+      onClose();
     },
     [blocks, onChange],
   );
@@ -102,6 +102,7 @@ const Preview = ({
         return block;
       });
       onChange([...updatedBlocks]);
+      onClose();
     },
     [blocks, onChange],
   );
@@ -131,21 +132,6 @@ const Preview = ({
 
   return (
     <div className={styles.preview}>
-      <Button onClick={onOpen}>Open Modal</Button>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          console.log("submitted form");
-        }}>
-        <button type="button">normal click</button>
-        <div
-          onClick={() => {
-            console.log("div click");
-          }}>
-          normal div click
-        </div>
-        <button type="submit">click</button>
-      </form>
       <SettingsModal
         onClose={onClose}
         isOpen={isOpen}
@@ -158,6 +144,7 @@ const Preview = ({
             handleSaveBlock(block);
           }
         }}
+        dropDimentions={dropDimentions}
       />
       <Frame
         ref={iframeRef}
@@ -172,9 +159,21 @@ const Preview = ({
               height: "100%",
               width: "100%",
             }}>
-            <Button onClick={() => onOpen()}>Open Modal</Button>
             <div
-              ref={drop}
+              ref={(el) => {
+                if (
+                  el?.getBoundingClientRect().width &&
+                  el?.getBoundingClientRect().height &&
+                  !dropDimentions.width &&
+                  !dropDimentions.height
+                ) {
+                  setDropDimention({
+                    width: el?.getBoundingClientRect().width - 10,
+                    height: el?.getBoundingClientRect().height - 10,
+                  });
+                }
+                drop(el);
+              }}
               id="previewPannel"
               style={{
                 position: "relative",
@@ -210,20 +209,25 @@ const Preview = ({
                     }}
                     handleSetIsDraggingBlock={handleSetIsDraggingBlock}
                     onKeyDown={(event) => {
-                      console.log("onKeyDown", event);
                       if (
                         (event.metaKey && event.key === "Backspace") ||
                         event.key == "Delete"
                       ) {
                         handleDeleteBlock(selected);
-                      } else {
+                      } else if (event.key == "Enter") {
                         setCurrentBlock({ ...block });
                         onOpen();
-                        //   TODO: Handle Edit
                       }
                     }}
                     tabIndex={selected === block.id && !isOpen ? 0 : -1}>
-                    <Element isSelected={selected === block.id} />
+                    <Element
+                      isSelected={selected === block.id}
+                      fontSize={block?.settings?.fontSize}
+                      fontWeight={block?.settings?.fontWeight}
+                      {...(block?.blockType == "Input"
+                        ? { defaultValue: block?.settings?.defaultValue }
+                        : { text: block?.settings?.text })}
+                    />
                   </BlockWrapper>
                 );
               })}

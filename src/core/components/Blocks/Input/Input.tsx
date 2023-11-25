@@ -1,14 +1,16 @@
 import { UserComponent } from "@/core/types/types";
-import React from "react";
+import React, { CSSProperties } from "react";
 interface props
   extends React.DetailedHTMLProps<
     React.InputHTMLAttributes<HTMLInputElement>,
     HTMLInputElement
   > {
   isSelected?: boolean;
+  fontSize?: CSSProperties["fontSize"];
+  fontWeight?: CSSProperties["fontWeight"];
 }
 const Input: UserComponent<props> = (props) => {
-  const { isSelected, style, ...rest } = props;
+  const { isSelected, defaultValue = "", fontSize, fontWeight, style, ...rest } = props;
   return (
     <input
       style={{
@@ -18,11 +20,21 @@ const Input: UserComponent<props> = (props) => {
         padding: "12px",
         border: "none",
         outline: "none",
-        //   color: "white",
+        fontSize,
+        fontWeight,
       }}
+      defaultValue={defaultValue}
       {...rest}
     />
   );
+};
+
+Input.craft = {
+  props: {
+    defaultValue: "This is a Input box",
+    fontSize: "",
+    fontWeight: "",
+  },
 };
 
 export { Input };

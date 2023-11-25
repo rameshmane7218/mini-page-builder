@@ -1,5 +1,5 @@
 import { UserComponent } from "@/core/types/types";
-import React from "react";
+import React, { CSSProperties } from "react";
 interface props
   extends React.DetailedHTMLProps<
     React.LabelHTMLAttributes<HTMLLabelElement>,
@@ -7,14 +7,38 @@ interface props
   > {
   text: string;
   isSelected?: boolean;
+  fontSize?: CSSProperties["fontSize"];
+  fontWeight?: CSSProperties["fontWeight"];
 }
 const Label: UserComponent<props> = (props) => {
-  const { text = "This is a Label", isSelected, style, ...rest } = props;
+  const {
+    text = "This is a Label",
+    fontSize,
+    fontWeight,
+    isSelected,
+    style,
+    ...rest
+  } = props;
   return (
-    <label style={{ ...style, cursor: isSelected ? "inherit" : style?.cursor }} {...rest}>
+    <label
+      style={{
+        ...style,
+        cursor: isSelected ? "inherit" : style?.cursor,
+        fontSize,
+        fontWeight,
+      }}
+      {...rest}>
       {text}
     </label>
   );
+};
+
+Label.craft = {
+  props: {
+    text: "This is a Label",
+    fontSize: "",
+    fontWeight: "",
+  },
 };
 
 export { Label };
