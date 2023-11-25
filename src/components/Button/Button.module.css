@@ -1,0 +1,26 @@
+.button {
+  border-radius: 2px;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  border: none;
+  cursor: pointer;
+}
+.button_primary {
+  background: var(--blue);
+  padding: 8px 16px;
+  color: white;
+}
+.button_primary:hover {
+  opacity: 0.9;
+}
+
+.button_icon {
+  display: grid;
+  place-items: center;
+  background: none;
+  padding: 4px;
+}
+.button_icon:hover {
+  background: var(--gray-1);
+}
