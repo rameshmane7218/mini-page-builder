@@ -35,6 +35,7 @@ Input.craft = {
     fontSize: "",
     fontWeight: "",
   },
+  name: "Input",
 };
 
 export { Input };

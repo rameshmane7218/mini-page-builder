@@ -39,6 +39,7 @@ Label.craft = {
     fontSize: "",
     fontWeight: "",
   },
+  name: "Label",
 };
 
 export { Label };

@@ -32,7 +32,7 @@ const Preview = ({
     () => ({
       accept: Object.keys(resolver),
       drop: (item: any, monitor) => {
-        if (item != undefined && item?.blockType && item?.isNew) {
+        if (item !== undefined && item?.blockType && item?.isNew) {
           /**
            * If Block is new then it will add
            */
@@ -51,7 +51,7 @@ const Preview = ({
            * If Block is not new and it has blockId then it will update that block
            */
           let updatedBlocks = [...blocks].map((block) => {
-            if (block?.id == item.blockId) {
+            if (block?.id === item.blockId) {
               block = {
                 ...block,
                 settings: {
@@ -77,24 +77,21 @@ const Preview = ({
     [blocks, onChange],
   );
 
-  const handleSetIsDraggingBlock = useCallback(
-    (value: boolean) => {
-      setIsDraggingBlock(value);
-    },
-    [isDraggingBlock],
-  );
+  const handleSetIsDraggingBlock = useCallback((value: boolean) => {
+    setIsDraggingBlock(value);
+  }, []);
 
   const handleSaveBlock = useCallback(
     (block: Record<string, any>) => {
       onChange([...blocks, { ...block, id: uuidv4() }]);
       onClose();
     },
-    [blocks, onChange],
+    [blocks, onChange, onClose],
   );
   const handleUpdateBlock = useCallback(
     (updatedBlock: Record<string, any>) => {
       let updatedBlocks = [...blocks].map((block) => {
-        if (block?.id == updatedBlock.id) {
+        if (block?.id === updatedBlock.id) {
           block = {
             ...updatedBlock,
           };
@@ -104,7 +101,7 @@ const Preview = ({
       onChange([...updatedBlocks]);
       onClose();
     },
-    [blocks, onChange],
+    [blocks, onChange, onClose],
   );
 
   const handleDeleteBlock = useCallback(
@@ -113,7 +110,7 @@ const Preview = ({
       onChange([...updatedBlocks]);
       setSelected(null);
     },
-    [selected, blocks, onChange],
+    [blocks, onChange],
   );
 
   useEffect(() => {
@@ -184,14 +181,12 @@ const Preview = ({
                 let target = e.target as typeof e.target & {
                   id: string;
                 };
-                if (target.id == "previewPannel") {
+                if (target.id === "previewPannel") {
                   setSelected(null);
                 }
               }}>
               {blocks.map((block, index) => {
-                const Element = resolver[
-                  block?.blockType
-                ] as React.FunctionComponent<any>;
+                const Element = resolver[block?.blockType];
                 return (
                   <BlockWrapper
                     key={index}
@@ -211,10 +206,10 @@ const Preview = ({
                     onKeyDown={(event) => {
                       if (
                         (event.metaKey && event.key === "Backspace") ||
-                        event.key == "Delete"
+                        event.key === "Delete"
                       ) {
                         handleDeleteBlock(selected);
-                      } else if (event.key == "Enter") {
+                      } else if (event.key === "Enter") {
                         setCurrentBlock({ ...block });
                         onOpen();
                       }
@@ -224,7 +219,7 @@ const Preview = ({
                       isSelected={selected === block.id}
                       fontSize={block?.settings?.fontSize}
                       fontWeight={block?.settings?.fontWeight}
-                      {...(block?.blockType == "Input"
+                      {...(block?.blockType === "Input"
                         ? { defaultValue: block?.settings?.defaultValue }
                         : { text: block?.settings?.text })}
                     />

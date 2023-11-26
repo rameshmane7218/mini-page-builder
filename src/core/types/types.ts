@@ -13,4 +13,4 @@ export type UserComponent<T = any> = React.ComponentType<T> & {
 };
 
 export type NodeRelated = Record<string, React.ElementType>;
-export type Resolver = Record<string, string | React.ElementType>;
+export type Resolver<T = any> = Record<string, UserComponent<T>>;

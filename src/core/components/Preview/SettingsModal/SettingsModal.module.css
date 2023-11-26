@@ -15,7 +15,7 @@
 
 .form_footer {
   display: flex;
-  justify-content: start;
+  justify-content: flex-start;
 }
 
 .form_input_wrapper {

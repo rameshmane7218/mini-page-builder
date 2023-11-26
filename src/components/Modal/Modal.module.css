@@ -4,7 +4,7 @@
   background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
-  align-items: start;
+  align-items: flex-start;
   z-index: 100;
   opacity: 0;
   visibility: hidden;
