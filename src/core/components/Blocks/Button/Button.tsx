@@ -21,7 +21,7 @@ const Button: UserComponent<props> = (props) => {
         padding: "12px",
         border: "none",
         color: "white",
-        fontSize,
+        fontSize: fontSize || 16,
         fontWeight,
       }}
       {...rest}>

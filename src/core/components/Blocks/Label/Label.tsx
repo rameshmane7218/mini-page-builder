@@ -24,7 +24,7 @@ const Label: UserComponent<props> = (props) => {
       style={{
         ...style,
         cursor: isSelected ? "inherit" : style?.cursor,
-        fontSize,
+        fontSize: fontSize || 16,
         fontWeight,
       }}
       {...rest}>

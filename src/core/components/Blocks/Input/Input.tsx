@@ -20,7 +20,7 @@ const Input: UserComponent<props> = (props) => {
         padding: "12px",
         border: "none",
         outline: "none",
-        fontSize,
+        fontSize: fontSize || 16,
         fontWeight,
       }}
       defaultValue={defaultValue}
