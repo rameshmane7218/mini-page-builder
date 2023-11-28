@@ -8,7 +8,7 @@ import { Divider } from "@/components/Divider/Divider";
 import { Input } from "@/components/Input/Input";
 import { useDisclosure } from "@/hooks/useDisclosure";
 import { LuDownload } from "react-icons/lu";
-import { validateItemStructure } from "@/utils/validator";
+import { sampleBlockLayout, validateItemStructure } from "@/utils/validator";
 
 const Header = ({
   blocks,
@@ -162,38 +162,4 @@ const ImportLayout = ({
   );
 };
 
-const sampleBlockLayout = [
-  {
-    blockType: "Label",
-    settings: {
-      text: "This is a Label",
-      x: 448,
-      y: 128.5,
-      fontSize: "",
-      fontWeight: "",
-    },
-    id: "e7f7d007-68a8-4bac-ba04-a99a3a295c27",
-  },
-  {
-    blockType: "Button",
-    settings: {
-      text: "Button",
-      x: 446,
-      y: 230,
-      fontSize: "",
-      fontWeight: "",
-    },
-    id: "5406c6ce-94fc-45d7-8ed3-6ee61b0fcdad",
-  },
-  {
-    blockType: "Input",
-    settings: {
-      defaultValue: "This is a Input box",
-      x: 446,
-      y: 166.5,
-      fontSize: "",
-      fontWeight: "",
-    },
-    id: "668f1f77-8d05-4578-9e08-81bfad25eaec",
-  },
-];
+

@@ -2,15 +2,7 @@ import { Button } from "@/components/Button/Button";
 import { Divider } from "@/components/Divider/Divider";
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "@/components/Modal/Modal";
 import { Resolver } from "@/core/types/types";
-import React, {
-  ChangeEvent,
-  SyntheticEvent,
-  memo,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
-import { FaTimes } from "react-icons/fa";
+import React, { ChangeEvent, SyntheticEvent, memo, useEffect, useState } from "react";
 import { CloseIcon } from "../../Icons/CloseIcon";
 
 import styles from "./SettingsModal.module.css";
@@ -41,16 +33,14 @@ const SettingsModal = memo(
 
     const handleOnChangeForm = (event: ChangeEvent<HTMLInputElement>) => {
       const { name, value, type } = event.target;
-      console.log("event", name, value, type);
+
       setBlockSettings((prev) => {
-        return { ...prev, [name]: type == "number" ? Number(value) : value };
+        return { ...prev, [name]: type === "number" ? Number(value) : value };
       });
     };
 
     const handleOnSubmitForm = (event: SyntheticEvent) => {
       event.preventDefault();
-      console.log("formSubmitted", blockSettings);
-
       onChange({ ...currentBlock, settings: { ...blockSettings } });
     };
 
@@ -70,14 +60,14 @@ const SettingsModal = memo(
         );
         setBlockSettings(reorderedObj);
       }
-    }, [currentBlock, isOpen]);
+    }, [currentBlock, isOpen, resolver]);
 
     return (
       <Modal isOpen={isOpen} onClose={onClose}>
         <form onSubmit={handleOnSubmitForm}>
           <ModalHeader className={styles.form_header}>
             <h2>
-              {currentBlock.id != undefined ? "Edit" : "Add"}{" "}
+              {currentBlock.id !== undefined ? "Edit" : "Add"}{" "}
               {currentBlock?.blockType || ""}
             </h2>
             <Button
@@ -100,9 +90,9 @@ const SettingsModal = memo(
                   type={inputTypeFromName[name] || "text"}
                   value={value as string}
                   onChange={handleOnChangeForm}
-                  {...(name == "x" && dropDimentions.width
+                  {...(name === "x" && dropDimentions.width
                     ? { min: 0, max: dropDimentions.width }
-                    : name == "y" && dropDimentions.height
+                    : name === "y" && dropDimentions.height
                     ? { min: 0, max: dropDimentions.height }
                     : {})}
                 />
