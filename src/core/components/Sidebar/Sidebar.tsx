@@ -1,9 +1,10 @@
-import React from "react";
 import styles from "./Sidebar.module.css";
-import { Resolver } from "@/core/types/types";
 import { BlockWrapper } from "../Blocks/BlockWrapper";
 import { GripVertical } from "../Icons/GripVertical";
-const Sidebar = ({ resolver }: { resolver: Resolver }) => {
+import { useEditor } from "@/core/context/EditorContext";
+const Sidebar = () => {
+  const { resolver } = useEditor();
+
   return (
     <aside className={styles.sidebar}>
       {/* Sidebar */}

@@ -1,4 +1,3 @@
-import { Resolver } from "@/core/types/types";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDrop } from "react-dnd";
 import Frame from "react-frame-component";
@@ -9,16 +8,10 @@ import { iframeInitialContent } from "./Iframe/iframeInitialContent";
 import { useDisclosure } from "@/hooks/useDisclosure";
 import { FrameBindingContext } from "./Iframe/FrameBindingContext";
 import { SettingsModal } from "./SettingsModal/SettingsModal";
+import { useEditor } from "@/core/context/EditorContext";
 
-const Preview = ({
-  resolver,
-  blocks,
-  onChange,
-}: {
-  resolver: Resolver;
-  blocks: Record<string, any>[];
-  onChange: (blocks: Record<string, any>[]) => void;
-}) => {
+const Preview = () => {
+  const { blocks, onChange, resolver } = useEditor();
   const [currentBlock, setCurrentBlock] = useState<Record<string, any>>({});
   const { isOpen, onOpen, onClose } = useDisclosure(false);
   const [isDraggingBlock, setIsDraggingBlock] = useState(false);
@@ -126,6 +119,8 @@ const Preview = ({
       };
     }
   }, [isDraggingBlock]);
+
+  console.log("blocks", blocks);
 
   return (
     <div className={styles.preview}>

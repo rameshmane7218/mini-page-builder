@@ -9,14 +9,10 @@ import { Input } from "@/components/Input/Input";
 import { useDisclosure } from "@/hooks/useDisclosure";
 import { LuDownload } from "react-icons/lu";
 import { sampleBlockLayout, validateItemStructure } from "@/utils/validator";
+import { useEditor } from "@/core/context/EditorContext";
 
-const Header = ({
-  blocks,
-  onChange,
-}: {
-  blocks: Record<string, any>[];
-  onChange: (blocks: Record<string, any>[]) => void;
-}) => {
+const Header = () => {
+  const { blocks } = useEditor();
   return (
     <header className={styles.header}>
       {/* Header  */}
@@ -24,7 +20,7 @@ const Header = ({
         <h1 className={styles.heading}>Mini Page Builder</h1>
       </div>
       <div className={styles.header_buttons}>
-        <ImportLayout onChange={onChange} blocks={blocks} />
+        <ImportLayout />
         <a
           href={`data:text/json;charset=utf-8,${encodeURIComponent(
             JSON.stringify(blocks),
@@ -42,13 +38,8 @@ const Header = ({
 
 export default Header;
 
-const ImportLayout = ({
-  blocks,
-  onChange,
-}: {
-  blocks: Record<string, any>[];
-  onChange: (blocks: Record<string, any>[]) => void;
-}) => {
+const ImportLayout = () => {
+  const { blocks, onChange } = useEditor();
   const fileInputRef: RefObject<HTMLInputElement> = useRef(null);
 
   const [uploadedData, setUploadedData] = useState<Record<string, any>[]>([]);
@@ -161,5 +152,3 @@ const ImportLayout = ({
     </div>
   );
 };
-
-

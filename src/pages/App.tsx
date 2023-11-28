@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "@/styles/App.css";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { Editor } from "@/core/components/Editor/Editor";

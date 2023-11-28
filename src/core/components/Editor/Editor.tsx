@@ -1,26 +1,20 @@
 import styles from "./Editor.module.css";
 import { Sidebar } from "../Sidebar/Sidebar";
-import { Resolver } from "@/core/types/types";
 import { Preview } from "../Preview/Preview";
 import Header from "../Header/Header";
-const Editor = ({
-  resolver,
-  blocks,
-  onChange,
-}: {
-  resolver: Resolver;
-  blocks: Record<string, any>[];
-  onChange: (blocks: Record<string, any>[]) => void;
-}) => {
+import { EditorContextProvider, EditorProviderProps } from "@/core/context/EditorContext";
+const Editor = ({ resolver }: Omit<EditorProviderProps, "children">) => {
   return (
-    <div className={styles.editor}>
-      <Header onChange={onChange} blocks={blocks} />
-      <div className={styles.pannel}>
-        {/* Preview Pannel */}
-        <Preview resolver={resolver} onChange={onChange} blocks={blocks} />
-        <Sidebar resolver={resolver}></Sidebar>
+    <EditorContextProvider resolver={resolver}>
+      <div className={styles.editor}>
+        <Header />
+        <div className={styles.pannel}>
+          {/* Preview Pannel */}
+          <Preview />
+          <Sidebar />
+        </div>
       </div>
-    </div>
+    </EditorContextProvider>
   );
 };
 
