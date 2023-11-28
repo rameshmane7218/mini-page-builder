@@ -22,8 +22,17 @@ const useLocalStorage = <T>(keyName: string, defaultValue: T) => {
     } catch (err) {}
     setStoredValue(newValue);
   };
+  const getValue = () => {
+    const value = window.localStorage.getItem(keyName);
 
-  return [storedValue, setValue] as const;
+    if (value) {
+      return JSON.parse(value) as T;
+    } else {
+      return defaultValue;
+    }
+  };
+
+  return { storedValue, setValue, getValue };
 };
 
 export { useLocalStorage };

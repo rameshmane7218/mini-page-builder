@@ -11,8 +11,18 @@
   padding: 8px 16px;
   color: white;
 }
+
 .button_primary:hover {
   opacity: 0.9;
+}
+.button_outline {
+  background: none;
+  padding: 8px 16px;
+  color: var(--blue);
+  border: 1px solid var(--blue);
+}
+.button_outline:hover {
+  opacity: 0.8;
 }
 
 .button_icon {

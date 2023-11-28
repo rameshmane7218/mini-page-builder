@@ -37,6 +37,7 @@ Button.craft = {
     fontWeight: "",
   },
   name: "Button",
+  order: 3,
 };
 
 export { Button };

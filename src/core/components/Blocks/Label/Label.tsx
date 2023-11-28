@@ -40,6 +40,7 @@ Label.craft = {
     fontWeight: "",
   },
   name: "Label",
+  order: 1,
 };
 
 export { Label };

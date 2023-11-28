@@ -6,6 +6,7 @@ export type UserComponentConfig<T> = {
   custom: Record<string, any>;
   isCanvas: boolean;
   name: string;
+  order: number;
   defaultProps: Partial<T>;
 };
 export type UserComponent<T = any> = React.ComponentType<T> & {

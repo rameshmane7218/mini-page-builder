@@ -2,6 +2,7 @@ import styles from "./Editor.module.css";
 import { Sidebar } from "../Sidebar/Sidebar";
 import { Resolver } from "@/core/types/types";
 import { Preview } from "../Preview/Preview";
+import Header from "../Header/Header";
 const Editor = ({
   resolver,
   blocks,
@@ -13,7 +14,7 @@ const Editor = ({
 }) => {
   return (
     <div className={styles.editor}>
-      <div className={styles.header}>{/* Header  */}</div>
+      <Header onChange={onChange} blocks={blocks} />
       <div className={styles.pannel}>
         {/* Preview Pannel */}
         <Preview resolver={resolver} onChange={onChange} blocks={blocks} />
