@@ -12,7 +12,7 @@ import { sampleBlockLayout, validateItemStructure } from "@/utils/validator";
 import { useEditor } from "@/core/context/EditorContext";
 
 const Header = () => {
-  const { blocks } = useEditor();
+  const { blocks, handleRedo, handleUndo } = useEditor();
   return (
     <header className={styles.header}>
       {/* Header  */}
@@ -20,6 +20,8 @@ const Header = () => {
         <h1 className={styles.heading}>Mini Page Builder</h1>
       </div>
       <div className={styles.header_buttons}>
+        <Button onClick={handleUndo}>Undo</Button>
+        <Button onClick={handleRedo}>Redo</Button>
         <ImportLayout />
         <a
           href={`data:text/json;charset=utf-8,${encodeURIComponent(
